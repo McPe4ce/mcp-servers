@@ -6,7 +6,7 @@ client = Client("http://localhost:8080/mcp")
 
 async def main():
     async with client:
-        result = await client.call_tool("get_topic_details", {"topic_id": "python-decorators"})
-        print(result.data)
+        result = await client.read_resource("topics://catalog")
+        print(result[0].text)
 
 asyncio.run(main())

@@ -1,9 +1,29 @@
-{
-  "id": "python-decorators",
-  "title": "Python Decorators",
-  "summary": "A short explanation of what this topic covers.",
-  "prerequisites": ["Functions", "Scope"],
-  "key_concepts": ["Higher-order functions", "Wrapper functions"],
-  "common_mistakes": ["Forgetting to return the wrapper function"],
-  "practice_idea": "Create a decorator that logs function calls."
-}
+[
+  {
+    "id": "python-decorators",
+    "title": "Python Decorators",
+    "summary": "A short explanation of what this topic covers.",
+    "prerequisites": ["Functions", "Scope"],
+    "key_concepts": ["Higher-order functions", "Wrapper functions"],
+    "common_mistakes": ["Forgetting to return the wrapper function"],
+    "practice_idea": "Create a decorator that logs function calls."
+  },
+  {
+    "id": "python-generators",
+    "title": "Python Generators",
+    "summary": "Functions that produce values lazily using yield instead of returning all at once.",
+    "prerequisites": ["Functions", "Iterators"],
+    "key_concepts": ["yield keyword", "Lazy evaluation", "Generator expressions"],
+    "common_mistakes": ["Expecting a generator to be reusable after it is exhausted"],
+    "practice_idea": "Write a generator that yields the Fibonacci sequence."
+  },
+  {
+    "id": "python-context-managers",
+    "title": "Python Context Managers",
+    "summary": "Objects that manage setup and cleanup around a block of code using the with statement.",
+    "prerequisites": ["Classes", "Exceptions"],
+    "key_concepts": ["with statement", "__enter__ and __exit__", "contextlib"],
+    "common_mistakes": ["Forgetting to release resources when an error occurs"],
+    "practice_idea": "Build a context manager that times how long a code block takes."
+  }
+]
