@@ -1,0 +1,9 @@
+{
+  "id": "python-decorators",
+  "title": "Python Decorators",
+  "summary": "A short explanation of what this topic covers.",
+  "prerequisites": ["Functions", "Scope"],
+  "key_concepts": ["Higher-order functions", "Wrapper functions"],
+  "common_mistakes": ["Forgetting to return the wrapper function"],
+  "practice_idea": "Create a decorator that logs function calls."
+}
