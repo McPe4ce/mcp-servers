@@ -50,6 +50,80 @@ invokes the `greet` tool, and prints the result. UI (`app=True`) tools only
 *render* inside a UI-capable host (the dev preview above); a terminal client
 receives the view as structured data.
 
+## Testing the server
+
+The server exposes two tools — `search_topics(query)` and
+`get_topic_details(topic_id)` — and one resource, `topics://catalog`. There are
+three ways to exercise them, from quickest to most realistic.
+
+### 1. Call a tool function directly (no server, no network)
+
+Because `@mcp.tool` leaves the function callable, you can import it and run it.
+Fastest way to check the logic:
+
+```bash
+venv/bin/python3 -c "from server.learning_server import search_topics; print(search_topics('decorators'))"
+venv/bin/python3 -c "from server.learning_server import get_topic_details; print(get_topic_details('python-generators'))"
+venv/bin/python3 -c "from server.learning_server import get_topic_catalog; print(get_topic_catalog())"
+```
+
+Run these from the repo root so the relative path `data/topics.json` resolves.
+
+### 2. Through an in-memory MCP client (tests it as a real tool, still no port)
+
+Pass the server object straight to a `Client` — no server process needed:
+
+```python
+# test_search.py  (in the repo root)
+import asyncio
+from fastmcp import Client
+from server.learning_server import mcp
+
+async def main():
+    async with Client(mcp) as client:
+        print(await client.call_tool("search_topics", {"query": "decorators"}))
+        print(await client.call_tool("get_topic_details", {"topic_id": "python-generators"}))
+        print(await client.read_resource("topics://catalog"))
+
+asyncio.run(main())
+```
+
+```bash
+venv/bin/python3 test_search.py
+```
+
+### 3. End-to-end over HTTP (server + client in separate terminals)
+
+Terminal 1 — start the server:
+
+```bash
+fastmcp run server/learning_server.py --transport http --host 127.0.0.1 --port 8080
+```
+
+Terminal 2 — connect and call it ([client/mcp_client.py](client/mcp_client.py)):
+
+```python
+from fastmcp import Client
+import asyncio
+
+client = Client("http://localhost:8080/mcp")
+
+async def main():
+    async with client:
+        # tools are called by name with an args dict
+        print(await client.call_tool("search_topics", {"query": "decorators"}))
+        print(await client.call_tool("get_topic_details", {"topic_id": "python-generators"}))
+        # resources are read by their URI, no arguments
+        result = await client.read_resource("topics://catalog")
+        print(result[0].text)
+
+asyncio.run(main())
+```
+
+Remember: **tools** use `call_tool(name, {args})` and the args keys must match the
+parameter names; **resources** use `read_resource(uri)` with no arguments and
+return a list of parts (index `result[0].text`).
+
 ## MCP Architecture Summary
 
 **What MCP is.**
