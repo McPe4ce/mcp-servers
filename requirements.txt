@@ -1,3 +1,4 @@
 # Direct dependencies (transitive deps like mcp, uvicorn, starlette are pulled in automatically)
 fastmcp==3.4.4
 prefab-ui==0.20.2
+google-adk==2.4.0
