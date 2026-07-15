@@ -2,3 +2,4 @@
 fastmcp==3.4.4
 prefab-ui==0.20.2
 google-adk==2.4.0
+mcp-server-fetch==2026.7.10

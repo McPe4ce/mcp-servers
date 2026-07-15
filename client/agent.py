@@ -10,7 +10,11 @@ from google.genai import types
 from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
 from google.adk.tools.mcp_tool import McpToolset
-from google.adk.tools.mcp_tool.mcp_session_manager import StreamableHTTPConnectionParams
+from google.adk.tools.mcp_tool.mcp_session_manager import (
+    StdioConnectionParams,
+    StdioServerParameters,
+    StreamableHTTPConnectionParams,
+)
 
 
 MCP_SERVER_URL = os.getenv("MCP_SERVER_URL", "http://localhost:8080/mcp")
@@ -28,6 +32,17 @@ mcp_tools = McpToolset(
     ],
 )
 
+# Third-party MCP server demo: the official "fetch" reference server, run
+# locally over stdio, giving the agent the ability to fetch web pages.
+fetch_tools = McpToolset(
+    connection_params=StdioConnectionParams(
+        server_params=StdioServerParameters(
+            command=sys.executable,
+            args=["-m", "mcp_server_fetch"],
+        ),
+    ),
+)
+
 if len(sys.argv) > 1:
     topic = sys.argv[1]
 else:
@@ -40,8 +55,9 @@ explainer_agent = Agent (
     instruction="When the user asks about a topic, first use the MCP tools to search for a matching topic and retrieve its details."
                 "Use the returned MCP data to answer. Include prerequisites, key concepts, common mistakes, and one practice idea when available."
                 "Do not invent topic details that were not provided by the MCP server."
-                "If no topic matches, explain that clearly.",
-    tools=[mcp_tools],
+                "If no topic matches, explain that clearly."
+                "You may use the fetch tool to look up a web page if the student's question needs outside context beyond the topic dataset.",
+    tools=[mcp_tools, fetch_tools],
 )
 
 async def run_agent(agent, prompt:str) -> str:
